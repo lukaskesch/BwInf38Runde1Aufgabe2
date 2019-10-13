@@ -24,5 +24,26 @@ namespace BwInfAufgabe2
         {
             InitializeComponent();
         }
+
+        private void ButtonRechnen_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                string Eingabe = TextboxEingabe.Text;
+                int[] Zahl = new int[Eingabe.Length];
+
+                for (int i = 0; i < Zahl.Length; i++)
+                {
+                    Zahl[i] = int.Parse(Eingabe[i].ToString());
+                }
+
+
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+        }
     }
 }
