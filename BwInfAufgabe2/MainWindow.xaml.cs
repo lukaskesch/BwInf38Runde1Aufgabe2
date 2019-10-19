@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -24,7 +25,7 @@ namespace BwInfAufgabe2
         {
             InitializeComponent();
         }
-        int BestNumberOfZeros = 10000000;
+        int BestNumberOfZeros;
         private void ButtonRechnen_Click(object sender, RoutedEventArgs e)
         {
             try
@@ -36,15 +37,18 @@ namespace BwInfAufgabe2
             }
             catch (Exception)
             {
-
                 throw;
             }
+            BestNumberOfZeros = int.MaxValue;
             string Input = TextboxEingabe.Text;
             int[] DigitsLeft = new int[Input.Length * 2];
             int[] DigitsChosen = new int[Input.Length * 2];
             DeclareArrays(DigitsLeft, DigitsChosen, Input);
 
+            //Starte die Rekursive Methode
             Recursion(DigitsLeft, DigitsChosen, 0);
+
+            MessageBox.Show(BestNumberOfZeros.ToString() + " Zahlenbloecke beginnen mit einer Null");
         }
         private void DeclareArrays(int[] DigitsLeft, int[] DigitsChoose, string Input)
         {
@@ -69,27 +73,24 @@ namespace BwInfAufgabe2
             if (DigitsLeft[0] == -2)
             {
                 CheckResult(DigitsChosen, true);
+                return;
             }
-            //Wenn nur noch eine Zahlen vorhanden ist
-            else if (DigitsLeft[1] == -2)
+            else if (GetFirstFreeIndex(DigitsLeft) < NumberOfSteps)
             {
                 return;
             }
             else
             {
+
                 //Choose - Gehe um Schritt nach vorne
                 GeheSchritte(ref DigitsLeft, ref DigitsChosen, NumberOfSteps);
 
-                //Check - Schaue ob Zwischenergebnis ein unnötiger Pfad ist
-                if (!CheckResult(DigitsChosen, false))
+                //Check - Schaue ob Zwischenergebnis ein möglicher Pfad ist
+                if (CheckResult(DigitsChosen, false))
                 {
-                    return;
-                }
-
-                //Explore - Probiere alle möglichen kommenden Schritte aus
-                for (int i = 2; i <= 4; i++)
-                {
-                    Recursion(DigitsLeft, DigitsChosen, i);
+                    Recursion(DigitsLeft, DigitsChosen, 4);
+                    Recursion(DigitsLeft, DigitsChosen, 3);
+                    Recursion(DigitsLeft, DigitsChosen, 2);
                 }
 
                 //Un-choose - Gehe diesen Schritt wieder zurück
@@ -109,7 +110,7 @@ namespace BwInfAufgabe2
                 if (NumberOfZeros < BestNumberOfZeros)
                 {
                     BestNumberOfZeros = NumberOfZeros;
-                    SetAusgabe(DigitsChosen, BestNumberOfZeros);
+                    SetAusgabe(DigitsChosen);
                 }
             }
             return true;
@@ -128,6 +129,11 @@ namespace BwInfAufgabe2
         private int GetNumberOfZeros(int[] DigitsChosen)
         {
             int NumberOfZeros = 0;
+            if (DigitsChosen[0] == 0)
+            {
+                NumberOfZeros++;
+
+            }
             for (int i = 0; i < DigitsChosen.Length - 1; i++)
             {
                 if (DigitsChosen[i] == -1 && DigitsChosen[i + 1] == 0)
@@ -137,27 +143,30 @@ namespace BwInfAufgabe2
             }
             return NumberOfZeros;
         }
-        private void SetAusgabe(int[] DigitsChosen, int BestNumberOfZeros)
+        private void SetAusgabe(int[] DigitsChosen)
         {
             string Ausgabe = string.Empty;
             for (int i = 0; i < DigitsChosen.Length; i++)
             {
-                if (DigitsChosen[i] == -2)
+                if (DigitsChosen[i] == -1 && DigitsChosen[i + 1] == -2)
                 {
                     break;
                 }
-                if (DigitsChosen[i] == -1)
+                else if (DigitsChosen[i] == -1)
                 {
                     Ausgabe += "-";
                     continue;
                 }
                 Ausgabe += DigitsChosen[i];
             }
+
+            Ausgabe += "\n";
             TextboxAusgabe.Text = Ausgabe;
-            MessageBox.Show(BestNumberOfZeros.ToString() + " Zahlenbloecke beginnen mit einer Null");
+
         }
         private void GeheSchritte(ref int[] DigitsLeft, ref int[] DigitsChosen, int NumberOfSteps)
         {
+            //Ermittle erste freien Index von DigitsChosen
             int Index = GetFirstFreeIndex(DigitsChosen);
 
             //Übertrage die Zahlen von "Zahlen" nach "Chosen"
@@ -165,49 +174,48 @@ namespace BwInfAufgabe2
             {
                 return;
             }
-            else if (NumberOfSteps >= 2)
+            if (NumberOfSteps >= 2)
             {
                 DigitsChosen[Index] = DigitsLeft[0];
                 DigitsChosen[Index + 1] = DigitsLeft[1];
             }
-            else if (NumberOfSteps >= 3)
+            if (NumberOfSteps >= 3)
             {
                 DigitsChosen[Index + 2] = DigitsLeft[2];
             }
-            else if (NumberOfSteps == 4)
+            if (NumberOfSteps == 4)
             {
                 DigitsChosen[Index + 3] = DigitsLeft[3];
             }
 
-            //Ziehe Zahl um Schritte nach vorne
+            //Setze Leerzeichen
+            DigitsChosen[Index + NumberOfSteps] = -1;
+
+            //Ziehe Zahl um Schritte nach vorne und loesche das Ende
             for (int i = 0; i < DigitsLeft.Length - NumberOfSteps; i++)
             {
                 DigitsLeft[i] = DigitsLeft[i + NumberOfSteps];
+                DigitsLeft[i + NumberOfSteps] = -2;
             }
-
-            //Lösche Ende von Zahlen
-            Index = GetFirstFreeIndex(DigitsLeft) - 1;
-            if (Index < 0)
-            {
-                return;
-            }
-            for (int i = Index; i > Index - NumberOfSteps; i--)
-            {
-                DigitsLeft[i] = -2;
-            }
-
         }
         private void GeheSchritteZurueck(ref int[] DigitsLeft, ref int[] DigitsChosen, int NumberOfSteps)
         {
             //Zahlenarray um Schritte nach hinten verschieben
-            for (int i = DigitsLeft.Length - 1; i >= 0 + NumberOfSteps; i--)
+            for (int i = DigitsLeft.Length - 1; i >= NumberOfSteps; i--)
             {
                 DigitsLeft[i] = DigitsLeft[i - NumberOfSteps];
             }
 
-            //Ende von Chosen in Zahlenarray einfügen
-            int Index = GetFirstFreeIndex(DigitsChosen);
+            //Startbedinung
             if (NumberOfSteps == 0) { return; }
+
+            //Ermittle Index, an dem Chosen endet 
+            int Index = GetFirstFreeIndex(DigitsChosen) - 1;
+
+            //Loesche -1 Trenner
+            DigitsChosen[Index] = -2;
+
+            //Ende von Chosen in Zahlenarray einfügen
             if (NumberOfSteps == 4)
             {
                 DigitsLeft[3] = DigitsChosen[Index - 1];
@@ -228,14 +236,44 @@ namespace BwInfAufgabe2
             }
             else if (NumberOfSteps == 2)
             {
-                if (Index - 2 < 0) { return; }
-
                 DigitsLeft[1] = DigitsChosen[Index - 1];
                 DigitsLeft[0] = DigitsChosen[Index - 2];
 
             }
             DigitsChosen[Index - 1] = -2;
             DigitsChosen[Index - 2] = -2;
+        }
+        private bool CheckIfResultAlreadyExist(string Ausgabe)
+        {
+            string TextbosText = TextboxAusgabe.Text;
+            string[] Text = Regex.Split(TextbosText, "\n");
+
+            try
+            {
+                int LastIndex = Text.Length - 2;
+
+                //MessageBox.Show(Ausgabe + "\n" + Text[LastIndex]);
+
+
+                if (Text[LastIndex] == Ausgabe)
+                {
+                    return true;
+                }
+            }
+            catch (Exception) { }
+
+            return false;
+        }
+        private void GebeArrayAus(int[] Array1, int[] Array2, int NumberSteps)
+        {
+            string Ausgabe = "Schritte: " + NumberSteps + "\n";
+
+            for (int i = 0; i < Array1.Length; i++)
+            {
+                Ausgabe += Array1[i].ToString() + "     " + Array2[i].ToString() + "\n";
+            }
+
+            //MessageBox.Show(Ausgabe);
         }
     }
 }

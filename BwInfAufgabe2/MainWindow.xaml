@@ -13,7 +13,7 @@
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
         <TextBox Name="TextboxEingabe" Grid.Row="0" Margin="20 10"></TextBox>
-        <TextBox Name="TextboxAusgabe" Grid.Row="1" Margin="20 10" IsReadOnly="True"></TextBox>
+        <TextBox Name="TextboxAusgabe" Grid.Row="1" Margin="20 10" IsReadOnly="True" VerticalScrollBarVisibility="Auto"></TextBox>
         <Button Name="ButtonRechnen" Grid.Row="2" Margin="150 8" Content="Berechnen" Click="ButtonRechnen_Click"/>
     </Grid>
 </Window>
