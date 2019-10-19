@@ -30,25 +30,21 @@ namespace BwInfAufgabe2
         {
             try
             {
+                BestNumberOfZeros = int.MaxValue;
+                string Input = TextboxEingabe.Text;
+                int[] DigitsLeft = new int[Input.Length * 2];
+                int[] DigitsChosen = new int[Input.Length * 2];
+                DeclareArrays(DigitsLeft, DigitsChosen, Input);
 
+                //Starte die Rekursive Methode
+                Recursion(DigitsLeft, DigitsChosen, 0);
 
-
-
+                MessageBox.Show(BestNumberOfZeros.ToString() + " Zahlenbloecke beginnen mit einer Null");
             }
             catch (Exception)
             {
-                throw;
+                //throw;
             }
-            BestNumberOfZeros = int.MaxValue;
-            string Input = TextboxEingabe.Text;
-            int[] DigitsLeft = new int[Input.Length * 2];
-            int[] DigitsChosen = new int[Input.Length * 2];
-            DeclareArrays(DigitsLeft, DigitsChosen, Input);
-
-            //Starte die Rekursive Methode
-            Recursion(DigitsLeft, DigitsChosen, 0);
-
-            MessageBox.Show(BestNumberOfZeros.ToString() + " Zahlenbloecke beginnen mit einer Null");
         }
         private void DeclareArrays(int[] DigitsLeft, int[] DigitsChoose, string Input)
         {
@@ -75,13 +71,13 @@ namespace BwInfAufgabe2
                 CheckResult(DigitsChosen, true);
                 return;
             }
+            //Wenn Schritt zu weit geht
             else if (GetFirstFreeIndex(DigitsLeft) < NumberOfSteps)
             {
                 return;
             }
             else
             {
-
                 //Choose - Gehe um Schritt nach vorne
                 GeheSchritte(ref DigitsLeft, ref DigitsChosen, NumberOfSteps);
 
@@ -162,7 +158,6 @@ namespace BwInfAufgabe2
 
             Ausgabe += "\n";
             TextboxAusgabe.Text = Ausgabe;
-
         }
         private void GeheSchritte(ref int[] DigitsLeft, ref int[] DigitsChosen, int NumberOfSteps)
         {
@@ -273,7 +268,7 @@ namespace BwInfAufgabe2
                 Ausgabe += Array1[i].ToString() + "     " + Array2[i].ToString() + "\n";
             }
 
-            //MessageBox.Show(Ausgabe);
+            MessageBox.Show(Ausgabe);
         }
     }
 }
