@@ -31,6 +31,7 @@ namespace BwInfAufgabe2
             try
             {
                 BestNumberOfZeros = int.MaxValue;
+                TextboxAusgabe.Text = string.Empty;
                 string Input = TextboxEingabe.Text;
                 int[] DigitsLeft = new int[Input.Length * 2];
                 int[] DigitsChosen = new int[Input.Length * 2];
@@ -39,12 +40,18 @@ namespace BwInfAufgabe2
                 //Starte die Rekursive Methode
                 Recursion(DigitsLeft, DigitsChosen, 0);
 
-                MessageBox.Show(BestNumberOfZeros.ToString() + " Zahlenbloecke beginnen mit einer Null");
+                if (BestNumberOfZeros < int.MaxValue)
+                {
+                    MessageBox.Show(BestNumberOfZeros.ToString() + " Zahlenbloecke beginnen mit einer Null");
+                    return;
+                }
             }
             catch (Exception)
             {
+                MessageBox.Show("Die Eingabeparamter konnten nicht entgegengenommen werden");
                 //throw;
             }
+
         }
         private void DeclareArrays(int[] DigitsLeft, int[] DigitsChoose, string Input)
         {
@@ -269,6 +276,36 @@ namespace BwInfAufgabe2
             }
 
             MessageBox.Show(Ausgabe);
+        }
+
+        private void ButtonBeispiel1_Click(object sender, RoutedEventArgs e)
+        {
+            TextboxEingabe.Text = "005480000005179734";
+            TextboxAusgabe.Text = string.Empty;
+        }
+
+        private void ButtonBeispiel2_Click(object sender, RoutedEventArgs e)
+        {
+            TextboxEingabe.Text = "03495929533790154412660";
+            TextboxAusgabe.Text = string.Empty;
+        }
+
+        private void ButtonBeispiel3_Click(object sender, RoutedEventArgs e)
+        {
+            TextboxEingabe.Text = "5319974879022725607620179";
+            TextboxAusgabe.Text = string.Empty;
+        }
+
+        private void ButtonBeispiel4_Click(object sender, RoutedEventArgs e)
+        {
+            TextboxEingabe.Text = "9088761051699482789038331267";
+            TextboxAusgabe.Text = string.Empty;
+        }
+
+        private void ButtonBeispiel5_Click(object sender, RoutedEventArgs e)
+        {
+            TextboxEingabe.Text = "011000000011000100111111101011";
+            TextboxAusgabe.Text = string.Empty;
         }
     }
 }
