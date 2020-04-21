@@ -38,7 +38,8 @@ kommt zum Beispiel auf
   (9+((9+(99+((9+9)*999)))/9))
 
 
-Aufgabe
+
+Aufgabe:
 
 a) Schreibe ein Programm, das zu einer eingegebenen natürlichen Zahl und einer Ziffer
 zwischen 1 und 9 einen Term ausgibt, der den genannten Bedingungen des Bibers genügt.
