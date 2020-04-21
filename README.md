@@ -37,6 +37,7 @@ kommt zum Beispiel auf
 
   (9+((9+(99+((9+9)*999)))/9))
 
+
 Aufgabe
 
 a) Schreibe ein Programm, das zu einer eingegebenen natürlichen Zahl und einer Ziffer
